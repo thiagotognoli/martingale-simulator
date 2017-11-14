@@ -8,6 +8,7 @@ const VERDE = 0;
 const APOSTA_COR = VERMELHO;
 const APOSTA_QTDE = 1000;
 const APOSTA_VALOR = 1;
+const PERCENTUAL_RETORNO_ESPERADO = 0.1;
 
 
 
@@ -63,7 +64,7 @@ function rodadaApostaCor($cor, $valorApostado, $valorTotal, $valorStop) {
     return array('valor'=>$valorTotal+$valorGanho,'num_apostas_perdidas'=>$numApostas-$numApostasGanhas);
 }
 
-$vezesSimulacao = 1000;
+$vezesSimulacao = 10000;
 $rodadasSimulacao = 0;
 $valorMaximo = 0;
 for ($simulacoes = 0; $simulacoes <= $vezesSimulacao; $simulacoes++) {
@@ -82,7 +83,7 @@ for ($simulacoes = 0; $simulacoes <= $vezesSimulacao; $simulacoes++) {
 
     $proxValorInvestir = APOSTA_QTDE*APOSTA_VALOR;
     //$valoresInvestidos=$proxValorInvestir;
-    $valorObjetivo = $proxValorInvestir;
+    $valorObjetivo = $proxValorInvestir*PERCENTUAL_RETORNO_ESPERADO;
     //$valor = 0;
     while ($caixa < $valorObjetivo) {
         $rodada++;
@@ -120,8 +121,8 @@ for ($simulacoes = 0; $simulacoes <= $vezesSimulacao; $simulacoes++) {
 }
 
 echo "=E=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=E=\n";
-echo 'Rodadas:                   ' . $rodadasSimulacao."\n"; 
-echo 'Valor Máximo Investido:    ' . $valorMaximo."\n";
-echo 'Valor Ganho:               ' . $valorObjetivo*$vezesSimulacao ."\n";
+echo 'Rodadas:                   ' . number_format($rodadasSimulacao,0,',','.')."\n"; 
+echo 'Valor Máximo Investido:    ' . number_format($valorMaximo,2,',','.')."\n";
+echo 'Valor Ganho:               ' . number_format($valorObjetivo*$vezesSimulacao,2,',','.') ."\n";
 echo "=E=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=E=\n";
 
