@@ -63,48 +63,65 @@ function rodadaApostaCor($cor, $valorApostado, $valorTotal, $valorStop) {
     return array('valor'=>$valorTotal+$valorGanho,'num_apostas_perdidas'=>$numApostas-$numApostasGanhas);
 }
 
-$valoresInvestidos = 0;
-$caixa = 0;;
+$vezesSimulacao = 1000;
+$rodadasSimulacao = 0;
+$valorMaximo = 0;
+for ($simulacoes = 0; $simulacoes <= $vezesSimulacao; $simulacoes++) {
+    $valoresInvestidos = 0;
+    $caixa = 0;
 
 
 
-$valorAposta = APOSTA_VALOR;
-$rodada = 0;
+    $valorAposta = APOSTA_VALOR;
+    $rodada = 0;
 
-//echo "==================================================\n";
-//echo 'Rodada:                   ' . $rodada."\n"; 
-//echo 'Valor Investido:          ' . $caixa."\n"; 
-//echo 'Valor Total Investido:    ' . $valoresInvestidos."\n"; 
+    //echo "==================================================\n";
+    //echo 'Rodada:                   ' . $rodada."\n"; 
+    //echo 'Valor Investido:          ' . $caixa."\n"; 
+    //echo 'Valor Total Investido:    ' . $valoresInvestidos."\n"; 
 
-$proxValorInvestir = APOSTA_QTDE*APOSTA_VALOR;
-//$valoresInvestidos=$proxValorInvestir;
-$valorObjetivo = $proxValorInvestir;
-//$valor = 0;
-while ($caixa < $valorObjetivo) {
-    $rodada++;
-    $caixa -= $proxValorInvestir;
-    $valor = $proxValorInvestir;
-    if ($caixa < 0 && (($caixa*-1) >= $valoresInvestidos)) { 
-        $valoresInvestidos = $caixa*-1;
+    $proxValorInvestir = APOSTA_QTDE*APOSTA_VALOR;
+    //$valoresInvestidos=$proxValorInvestir;
+    $valorObjetivo = $proxValorInvestir;
+    //$valor = 0;
+    while ($caixa < $valorObjetivo) {
+        $rodada++;
+        $rodadasSimulacao++;
+        $caixa -= $proxValorInvestir;
+        $valor = $proxValorInvestir;
+        if ($caixa < 0 && (($caixa*-1) >= $valoresInvestidos)) { 
+            $valoresInvestidos = $caixa*-1;
+        }
+        echo "==================================================\n";
+        echo 'Rodada:                   ' . $rodada."\n";
+        echo 'Caixa:                    ' . $caixa."\n";
+        echo 'Valor Investido:          ' . $valor."\n";
+        echo 'Valor Máximo Investido:   ' . $valoresInvestidos."\n";
+        echo "==================================================\n";
+        $rodadaRet = rodadaApostaCor(VERMELHO, $valorAposta, $valor, ($valorObjetivo+($caixa*-1)));
+        $caixa += $rodadaRet['valor'];
+        $valorAposta *= 2;
+        $proxValorInvestir = $valorAposta*$rodadaRet['num_apostas_perdidas'];
+        usleep(10);
+        //echo "\n\n\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n";
+        //echo "Cx: ".$caixa."\n";
+        //echo "Vo: ".$valorObjetivo."\n";
     }
-    echo "==================================================\n";
-    echo 'Rodada:                   ' . $rodada."\n";
+
+    echo "=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=\n";
+    echo 'Rodada:                   ' . $rodada."\n"; 
+    echo 'Valor Total Investido:    ' . $valoresInvestidos."\n";
     echo 'Caixa:                    ' . $caixa."\n";
-    echo 'Valor Investido:          ' . $valor."\n";
-    echo 'Valor Máximo Investido:   ' . $valoresInvestidos."\n";
-    echo "==================================================\n";
-    $rodadaRet = rodadaApostaCor(VERMELHO, $valorAposta, $valor, ($valorObjetivo+($caixa*-1)));
-    $caixa += $rodadaRet['valor'];
-    $valorAposta *= 2;
-    $proxValorInvestir = $valorAposta*$rodadaRet['num_apostas_perdidas'];
-    sleep(1);
-    //echo "\n\n\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n";
-    //echo "Cx: ".$caixa."\n";
-    //echo "Vo: ".$valorObjetivo."\n";
+    echo "=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=\n";
+
+    if ($valoresInvestidos > $valorMaximo) {
+        $valorMaximo = $valoresInvestidos;
+    }
 }
 
-echo "==================================================\n";
-echo 'Rodada:                   ' . $rodada."\n"; 
-echo 'Valor Total Investido:    ' . $valoresInvestidos."\n";
-echo 'Caixa:                    ' . $caixa."\n";
-echo "==================================================\n";
+echo "=E=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=E=\n";
+echo 'Rodadas:                   ' . $rodadasSimulacao."\n"; 
+echo 'Valor Máximo Investido:    ' . $valorMaximo."\n";
+echo 'Valor Ganho:               ' . $valorObjetivo*$vezesSimulacao ."\n";
+echo "=E=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=W=E=\n";
+
